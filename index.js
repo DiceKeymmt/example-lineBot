@@ -31,7 +31,15 @@ const data = {
 
 const server = http.createServer();
 
-server.on('request', (req,res) => {
-    console.log(process.env)
-    res.end('owata');
+server.on('request', (req, res) => {
+    let body = '';
+
+    req.on('data', chunk => {
+        body += chunk
+    });
+
+    req.on('end', () => {
+        console.log(options.headers['Authorization'])
+        res.end('owata')
+    });
 }).listen(process.env.PORT||8080)
