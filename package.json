@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/diceKeYam/example-lineBot/issues"
   },
-  "homepage": "https://github.com/diceKeYam/example-lineBot#readme"
+  "homepage": "https://github.com/diceKeYam/example-lineBot#readme",
+  "dependencies": {
+    "dotenv": "^6.0.0"
+  }
 }
