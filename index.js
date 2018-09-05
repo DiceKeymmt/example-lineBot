@@ -32,6 +32,6 @@ const data = {
 const server = http.createServer();
 
 server.on('request', (req,res) => {
-    console.log(process.env.channelAccessToken)
+    console.log(process.env)
     res.end('owata');
 }).listen(process.env.PORT||8080)
