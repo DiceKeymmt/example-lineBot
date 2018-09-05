@@ -21,6 +21,17 @@ const options = {
     }
 }
 
+const test = {
+    protocol: 'https:',
+    host: 'http-server-test.herokuapp.com',
+    port: 443,
+    method: 'POST',
+    path: '/webhook',
+    headers: {
+        'Content-Type': 'application/json',
+    }
+}
+
 const data = {
     replyToken: '',
     messages: [{
@@ -31,6 +42,20 @@ const data = {
 
 const server = http.createServer();
 
+const client = https.request(test, res => {
+    res.on('data', chunk => {
+        console.log(`chunk`)
+    })
+
+    res.on('end', () => {
+        console.log('POST owata')
+    })
+})
+
+client.on('error', err => {
+    console.log(err)
+})
+
 server.on('request', (req, res) => {
     let body = '';
 
@@ -39,7 +64,8 @@ server.on('request', (req, res) => {
     });
 
     req.on('end', () => {
-        console.log(options.headers['Authorization'])
+        client.write(JSON.stringify(data))
+        client.end()
         res.end('owata')
     });
 }).listen(process.env.PORT||8080)
