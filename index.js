@@ -60,7 +60,7 @@ server.on('request', (req, res) => {
     })
     
     console.log(client)
-    
+
     req.on('data', chunk => {
         body += chunk
     });
@@ -68,6 +68,7 @@ server.on('request', (req, res) => {
     req.on('end', () => {
         client.write(JSON.stringify(data))
         client.end()
+        console.log('req.end')
         console.log(client)
         res.end('owata')
     });
