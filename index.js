@@ -56,6 +56,8 @@ client.on('error', err => {
     console.log(err)
 })
 
+console.log(client)
+
 server.on('request', (req, res) => {
     let body = '';
 
@@ -66,6 +68,7 @@ server.on('request', (req, res) => {
     req.on('end', () => {
         client.write(JSON.stringify(data))
         client.end()
+        console.log(client)
         res.end('owata')
     });
 }).listen(process.env.PORT||8080)
