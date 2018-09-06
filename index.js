@@ -40,17 +40,6 @@ const data = {
     }]
 }
 
-const server = http.createServer();
+const client = http.createClient(process.env.PORT||8080,'polar-journey-64411.herokuapp.com')
 
-const client = https.request(test, res => {
-    res.on('data', chunk => {})
-    res.on('end', () => {})
-})
-
-client.on('error', err => {})
-
-server.on('request', (req,res) => {
-    client.write(JSON.stringify(data))
-    client.end()
-    res.end('owata')
-}).listen(process.env.PORT||8080)
+console.log(client)
