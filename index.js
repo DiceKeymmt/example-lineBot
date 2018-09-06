@@ -59,7 +59,10 @@ server.on('request', (req, res) => {
         //console.log(err)
     })
     
-    console.log(client)
+    console.log(`${client}
+    
+    
+    `)
 
     req.on('data', chunk => {
         body += chunk
