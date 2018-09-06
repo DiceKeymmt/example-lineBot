@@ -42,34 +42,9 @@ const data = {
 
 const server = http.createServer();
 
-server.on('request', (req, res) => {
-    let body = '';
+const client = https.request(test);
 
-    const client = https.request(test, res => {
-        res.on('data', chunk => {
-            //console.log(`chunk`)
-        })
-    
-        res.on('end', () => {
-            //console.log('POST owata')
-        })
-    })
-    
-    client.on('error', err => {
-        //console.log(err)
-    })
-    
+server.on('request', (req,res) => {
     console.log(client)
-    console.log('\n\n\n')
-    req.on('data', chunk => {
-        body += chunk
-    });
-
-    req.on('end', () => {
-        client.write(JSON.stringify(data))
-        client.end()
-        //console.log('req.end')
-        console.log(client)
-        res.end('owata')
-    });
+    res.end()
 }).listen(process.env.PORT||8080)
