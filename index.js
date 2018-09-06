@@ -47,8 +47,10 @@ const client = https.request(test, res => {
     res.on('end', () => {})
 })
 
+client.on('error', err => {})
+
 server.on('request', (req,res) => {
     client.write(JSON.stringify(data))
     client.end()
-    res.end()
+    res.end('owata')
 }).listen(process.env.PORT||8080)
