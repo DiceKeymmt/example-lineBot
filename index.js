@@ -47,16 +47,16 @@ server.on('request', (req, res) => {
 
     const client = https.request(test, res => {
         res.on('data', chunk => {
-            console.log(`chunk`)
+            //console.log(`chunk`)
         })
     
         res.on('end', () => {
-            console.log('POST owata')
+            //console.log('POST owata')
         })
     })
     
     client.on('error', err => {
-        console.log(err)
+        //console.log(err)
     })
     
     console.log(client)
@@ -68,7 +68,7 @@ server.on('request', (req, res) => {
     req.on('end', () => {
         client.write(JSON.stringify(data))
         client.end()
-        console.log('req.end')
+        //console.log('req.end')
         console.log(client)
         res.end('owata')
     });
