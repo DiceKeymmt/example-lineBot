@@ -42,9 +42,13 @@ const data = {
 
 const server = http.createServer();
 
-const client = https.request(test);
+const client = https.request(test, res => {
+    res.on('data', chunk => {})
+    res.on('end', () => {})
+})
 
 server.on('request', (req,res) => {
-    console.log(client)
+    client.write(JSON.stringify(data))
+    client.end()
     res.end()
 }).listen(process.env.PORT||8080)
