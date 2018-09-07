@@ -43,7 +43,11 @@ server.on('request', (req,res) => {
         const signature = crypto.createHmac('SHA256',config.channelSecret).update(rowData).digest('base64');
 
         if (req.headers['X-Line-Signature'] === signature) {
-            console.log(signature)
+            console.log(`True
+            ${signature}`)
+        } else {
+            console.log(`False
+            ${signature}`)
         }
     })
 
