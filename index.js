@@ -70,6 +70,7 @@ server.on('request', (req, res) => {
 
             req.write(JSON.stringify(data))
             req.end();
+            res.end('owata')
         }
     })
-})
+}).listen(config.port||8080)
