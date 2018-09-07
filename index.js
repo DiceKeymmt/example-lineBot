@@ -45,7 +45,7 @@ server.on('request', (req, res) => {
                 messages: [
                     {
                         type: 'text',
-                        text: webhookEventObj.message.text
+                        text: 'replyTest'
                     }
                 ]
             }
