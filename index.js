@@ -71,7 +71,8 @@ data.replyToken:${data.replyToken}`)
                 _req.write(JSON.stringify(data));
 
                 _req.end();
+            } else {
+                console.log('False')
             }
-        }
     })
 }).listen(process.env.PORT||8080);
