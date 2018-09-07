@@ -36,7 +36,7 @@ server.on('request', (req, res) => {
             return
         }
 
-        const signature = crypto.createHmac('SHA256',config.channelSecret).update(body).digest('base64');
+        const signature = crypto.createHmac('SHA256', config.channelSecret).update(body).digest('base64');
         if (req.headers['x-line-signature'] === signature) {
             const webhookEventObj = JSON.parse(body);
 
@@ -44,19 +44,26 @@ server.on('request', (req, res) => {
                 switch (webhookEventObj.events[0].message.type) {
                     case 'text':
                         return {
-                            type: 'text',
-                            text: webhookEventObj.events[0].message.text
+                            replyToken: webhookEventObj.events[0].replyToken,
+                            messages: [{
+                                type: 'text',
+                                text: webhookEventObj.events[0].message.text
+                            }]
                         }
+                        
                     default:
                         return {
-                            type: 'text',
-                            text: '値が無効です。'
+                            replyToken: webhookEventObj.events[0].replyToken,
+                            messages: [{
+                                type: 'text',
+                                text: '値が無効です。'
+                            }]
                         }
                 }
             })
 
             options.headers['Content-Length'] = Buffer.byteLength(JSON.stringify(data));
-            
+
             const req = https.request(options, res => {
                 let body = '';
 
@@ -78,4 +85,4 @@ server.on('request', (req, res) => {
             res.end('owata')
         }
     })
-}).listen(config.port||8080)
+}).listen(config.port || 8080)
