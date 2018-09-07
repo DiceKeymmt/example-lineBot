@@ -53,9 +53,15 @@ Not Found`)
         const d = JSON.stringify(data);
 
         const _req = https.request(options, res => {
-            res.on('data', chunk => {});
+            let body = ''
+            res.setEncoding('utf8')
+            res.on('data', chunk => {
+                body += chunk;
+            });
             
-            res.on('end', () => {});
+            res.on('end', () => {
+                console.log(body)
+            });
         });
 
         _req.on('error', err => {
