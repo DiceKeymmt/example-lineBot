@@ -9,71 +9,84 @@ const config = {
     channelSecret: process.env.CHANNEL_SECRET
 }
 
-const options = {
-    protocol: 'https:',
-    host: 'api.line.me',
-    port: 443,
-    method: 'POST',
-    path: '/v2/bot/message/reply',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${config.channelAccessToken}`
-    }
-}
-
-const data = {
-    replyToken: '',
-    messages: [{
-        type: 'text',
-        text: 'Hello World!'
-    }]
-}
+const HOST = 'api.line.me'; 
+const REPLY_PATH = '/v2/bot/message/reply';
+const CH_SECRET = process.env.CHANNEL_SECRET;
+const CH_ACCESS_TOKEN = process.env.CHANNEL_ACCESS_TOKEN;
+const SIGNATURE = crypto.createHmac('sha256', CH_SECRET);
+const PORT = process.env.PORT;
 
 const server = http.createServer();
 
-server.on('request', (req, res) => {
-    if (req.url !== '/webhook' || req.method !== 'POST') {
-        res.writeHead(404, {'Content-Type':'text/plain'})
-        res.end(`404
-Not Found`)
+const client = (replyToken, SendMessageObject) => {    
+    let postDataStr = JSON.stringify({ replyToken: replyToken, messages: SendMessageObject });
+    let options = {
+        host: HOST,
+        port: 443,
+        path: REPLY_PATH,
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'X-Line-Signature': SIGNATURE,
+            'Authorization': `Bearer ${CH_ACCESS_TOKEN}`,
+            'Content-Length': Buffer.byteLength(postDataStr)
+        }
+    };
+
+    return new Promise((resolve, reject) => {
+        let req = https.request(options, (res) => {
+                    let body = '';
+                    res.setEncoding('utf8');
+                    res.on('data', (chunk) => {
+                        body += chunk;
+                    });
+                    res.on('end', () => {
+                        resolve(body);
+                    });
+        });
+
+        req.on('error', (e) => {
+            reject(e);
+        });
+        req.write(postDataStr);
+        req.end();
+    });
+};
+
+http.createServer((req, res) => {    
+    if(req.url !== '/' || req.method !== 'POST'){
+        res.writeHead(200, {'Content-Type': 'text/plain'});
+        res.end('');
     }
 
     let body = '';
-    req.on('data', chunk => {
+    req.on('data', (chunk) => {
         body += chunk;
-    });
-
+    });        
     req.on('end', () => {
-        if (body === '') {
-            console.log('bodyが空です。');
-            return
+        if(body === ''){
+          console.log('bodyが空です。');
+          return;
         }
 
-        data.replyToken = JSON.parse(body).events[0].replyToken;
-        const d = JSON.stringify(data);
-
-        const _req = https.request(options, res => {
-            let body = ''
-            res.setEncoding('utf8')
-            res.on('data', chunk => {
-                body += chunk;
-            });
-            
-            res.on('end', () => {
-                console.log(body)
-            });
-        });
-
-        _req.on('error', err => {
-            console.log(err)
-        });
-
-        _req.write(d)
-
-        _req.end()
+        let WebhookEventObject = JSON.parse(body).events[0];        
+        //メッセージが送られて来た場合
+        if(WebhookEventObject.type === 'message'){
+            let SendMessageObject;
+            if(WebhookEventObject.message.type === 'text'){
+                SendMessageObject = [{
+                    type: 'text',
+                    text: WebhookEventObject.message.text
+                }];
+            }
+            client(WebhookEventObject.replyToken, SendMessageObject)
+            .then((body)=>{
+                console.log(body);
+            },(e)=>{console.log(e)});
+        }
 
         res.writeHead(200, {'Content-Type': 'text/plain'});
         res.end('success');
-        
-    })
-}).listen(process.env.PORT||8080)
+    });
+
+}).listen(PORT||8080);
