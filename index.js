@@ -32,6 +32,7 @@ const data = {
 const server = http.createServer();
 
 server.on('request', (req,res) => {
+    console.log(req.headers)
     let rowData = '';
 
     req.on('data', chunk => {
