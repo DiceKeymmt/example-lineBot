@@ -51,6 +51,8 @@ server.on('request', (req, res) => {
 
             if (req.headers['x-line-signature'] === signature) {
                 console.log(typeof rowData)
+                console.log(JSON.parse(rowData))
+                res.end('owata')
             }
         }
     })
