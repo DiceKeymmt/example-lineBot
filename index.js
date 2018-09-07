@@ -40,7 +40,7 @@ server.on('request', (req,res) => {
     })
 
     req.on('end', () => {
-        if (req.headers['x-line-signature']) {
+        if (!req.headers['x-line-signature']) {
             res.writeHead(404,{'Content-Type':'text/plain'});
             res.end(`File not found
             お探しのページは見つかりません。`)
