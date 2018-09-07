@@ -42,14 +42,33 @@ server.on('request', (req,res) => {
     req.on('end', () => {
         if (!req.headers['x-line-signature']) {
             res.writeHead(404,{'Content-Type':'text/plain'});
-            res.end(`File not found
-            お探しのページは見つかりません。`)
+            res.end(`404 Not Found
+お探しのページは見つかりません。`)
         } else {
             const signature = crypto.createHmac('SHA256', config.channelSecret).update(rowData).digest('base64')
 
             if (req.headers['x-line-signature'] === signature) {
-                console.log(rowData)
-                res.end('owata')
+                const body = JSON.parse(rowData);
+                data.replyToken = body.replyToken;
+
+                const req = https.request(options, res => {
+                    let requestBody = '';
+                    res.on('data', chunk => {
+                        requestBody += chunk;
+                    });
+
+                    res.on('end', () => {
+                        console.log(requestBody);
+                    });
+                });
+
+                req.on('error', err => {
+                    console.log(err);
+                });
+
+                req.write(JSON.stringify(data));
+
+                req.end();
             }
         }
     })
