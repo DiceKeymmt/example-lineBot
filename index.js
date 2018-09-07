@@ -50,8 +50,10 @@ server.on('request', (req,res) => {
             if (req.headers['x-line-signature'] === signature) {
                 const body = JSON.parse(rowData);
                 data.replyToken = body.replyToken;
+                console.log(`body.replyToken:${body.replyToken}
+data.replyToken:${data.replyToken}`)
 
-                const req = https.request(options, res => {
+                const _req = https.request(options, res => {
                     let requestBody = '';
                     res.on('data', chunk => {
                         requestBody += chunk;
@@ -62,13 +64,13 @@ server.on('request', (req,res) => {
                     });
                 });
 
-                req.on('error', err => {
+                _req.on('error', err => {
                     console.log(err);
                 });
 
-                req.write(JSON.stringify(data));
+                _req.write(JSON.stringify(data));
 
-                req.end();
+                _req.end();
             }
         }
     })
