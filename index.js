@@ -50,8 +50,8 @@ server.on('request', (req, res) => {
             const signature = crypto.createHmac('SHA256', config.channelSecret).update(rowData).digest('base64')
 
             if (req.headers['x-line-signature'] === signature) {
-                console.log(typeof rowData)
-                console.log(JSON.parse(rowData))
+                data.replyToken = JSON.parse(rowData).events[0].replyToken
+                console.log(data)
                 res.end('owata')
             }
         }
