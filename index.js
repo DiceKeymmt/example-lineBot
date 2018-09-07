@@ -31,7 +31,7 @@ const data = {
 
 const server = http.createServer();
 
-server.on('request', (req,res) => {
+server.on('request', (req, res) => {
     console.log(req.headers)
     let rowData = '';
 
@@ -41,7 +41,9 @@ server.on('request', (req,res) => {
 
     req.on('end', () => {
         if (!req.headers['x-line-signature']) {
-            res.writeHead(404,{'Content-Type':'text/plain'});
+            res.writeHead(404, {
+                'Content-Type': 'text/plain'
+            });
             res.end(`404 Not Found
 お探しのページは見つかりません。`)
         } else {
@@ -74,5 +76,6 @@ data.replyToken:${data.replyToken}`)
             } else {
                 console.log('False')
             }
+        }
     })
-}).listen(process.env.PORT||8080);
+}).listen(process.env.PORT || 8080);
