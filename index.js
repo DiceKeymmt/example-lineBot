@@ -40,15 +40,20 @@ server.on('request', (req, res) => {
         if (req.headers['x-line-signature'] === signature) {
             const webhookEventObj = JSON.parse(body);
 
-            const data = {
-                replyToken: webhookEventObj.events[0].replyToken,
-                messages: [
-                    {
-                        type: 'text',
-                        text: 'replyTest'
-                    }
-                ]
-            }
+            const data = (() => {
+                switch (webhookEventObj.events[0].message.type) {
+                    case 'text':
+                        return {
+                            type: 'text',
+                            text: webhookEventObj.events[0].message.text
+                        }
+                    default:
+                        return {
+                            type: 'text',
+                            text: '値が無効です。'
+                        }
+                }
+            })
 
             options.headers['Content-Length'] = Buffer.byteLength(JSON.stringify(data));
             
