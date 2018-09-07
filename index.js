@@ -69,12 +69,11 @@ ${err}`);
                 });
                 console.log(data);
                 const d = JSON.stringify(data);
+                console.log(typeof d)
                 req.write(d);
                 req.end()
-
+                res.end('owata')
             }
-
-            res.end('owata')
         }
     })
 }).listen(process.env.PORT || 8080);
