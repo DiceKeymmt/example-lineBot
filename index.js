@@ -50,7 +50,7 @@ server.on('request', (req, res) => {
                                 text: webhookEventObj.events[0].message.text
                             }]
                         }
-                        
+
                     default:
                         return {
                             replyToken: webhookEventObj.events[0].replyToken,
@@ -60,7 +60,7 @@ server.on('request', (req, res) => {
                             }]
                         }
                 }
-            })
+            })();
 
             options.headers['Content-Length'] = Buffer.byteLength(JSON.stringify(data));
 
