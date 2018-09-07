@@ -6,87 +6,70 @@ const crypto = require('crypto');
 
 const config = {
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
-    channelSecret: process.env.CHANNEL_SECRET
+    channelSecret: process.env.CHANNEL_SECRET,
+    port: process.env.PORT
 }
 
-const HOST = 'api.line.me'; 
-const REPLY_PATH = '/v2/bot/message/reply';
-const CH_SECRET = process.env.CHANNEL_SECRET;
-const CH_ACCESS_TOKEN = process.env.CHANNEL_ACCESS_TOKEN;
-const SIGNATURE = crypto.createHmac('sha256', CH_SECRET);
-const PORT = process.env.PORT;
+let options = {
+    protocol: 'https:',
+    host: 'api.line.me',
+    method: 'POST',
+    path: '/v2/bot/message/reply',
+    headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': 0,
+        'Authorization': `Bearer ${config.channelAccessToken}`
+    }
+}
 
 const server = http.createServer();
 
-const client = (replyToken, SendMessageObject) => {    
-    let postDataStr = JSON.stringify({ replyToken: replyToken, messages: SendMessageObject });
-    let options = {
-        host: HOST,
-        port: 443,
-        path: REPLY_PATH,
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'X-Line-Signature': SIGNATURE,
-            'Authorization': `Bearer ${CH_ACCESS_TOKEN}`,
-            'Content-Length': Buffer.byteLength(postDataStr)
-        }
-    };
-
-    return new Promise((resolve, reject) => {
-        let req = https.request(options, (res) => {
-                    let body = '';
-                    res.setEncoding('utf8');
-                    res.on('data', (chunk) => {
-                        body += chunk;
-                    });
-                    res.on('end', () => {
-                        resolve(body);
-                    });
-        });
-
-        req.on('error', (e) => {
-            reject(e);
-        });
-        req.write(postDataStr);
-        req.end();
-    });
-};
-
-http.createServer((req, res) => {    
-    if(req.url !== '/' || req.method !== 'POST'){
-        res.writeHead(200, {'Content-Type': 'text/plain'});
-        res.end('');
-    }
-
+server.on('request', (req, res) => {
     let body = '';
-    req.on('data', (chunk) => {
+    req.on('data', chunk => {
         body += chunk;
-    });        
-    req.on('end', () => {
-        if(body === ''){
-          console.log('bodyが空です。');
-          return;
-        }
-
-        let WebhookEventObject = JSON.parse(body).events[0];        
-        //メッセージが送られて来た場合
-        if(WebhookEventObject.type === 'message'){
-            let SendMessageObject;
-            if(WebhookEventObject.message.type === 'text'){
-                SendMessageObject = [{
-                    type: 'text',
-                    text: WebhookEventObject.message.text
-                }];
-            }
-            client(WebhookEventObject.replyToken, SendMessageObject)
-            .then((body)=>{
-                console.log(body);
-            },(e)=>{console.log(e)});
-        }
-
-        res.writeHead(200, {'Content-Type': 'text/plain'});
-        res.end('success');
     });
 
-}).listen(PORT||8080);
+    req.on('end', () => {
+        if (body === '') {
+            console.log('bodyが空です。');
+            return
+        }
+
+        const signature = crypto.createHmac('SHA256',config.channelSecret).update(body).digest('base64');
+        if (req.headers['x-line-signature'] === signature) {
+            const webhookEventObj = JSON.parse(body);
+
+            const data = {
+                replyToken: webhookEventObj.replyToken,
+                messages: [
+                    {
+                        type: 'text',
+                        text: webhookEventObj.message.text
+                    }
+                ]
+            }
+
+            options.headers['Content-Length'] += Buffer.byteLength(JSON.stringify(data));
+            
+            const req = https.request(options, res => {
+                const body = '';
+
+                res.on('data', chunk => {
+                    body += chunk;
+                });
+
+                res.on('end', () => {
+                    console.log(body)
+                });
+            });
+
+            req.on('error', err => {
+                console.log(err)
+            })
+
+            req.write(JSON.stringify(data))
+            req.end();
+        }
+    })
+})
