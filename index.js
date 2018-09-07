@@ -50,7 +50,7 @@ server.on('request', (req, res) => {
                 ]
             }
 
-            options.headers['Content-Length'] += Buffer.byteLength(JSON.stringify(data));
+            options.headers['Content-Length'] = Buffer.byteLength(JSON.stringify(data));
             
             const req = https.request(options, res => {
                 let body = '';
