@@ -27,9 +27,7 @@ const client = (replyToken, SendMessageObject) => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',
-            'X-Line-Signature': SIGNATURE,
-            'Authorization': `Bearer ${CH_ACCESS_TOKEN}`,
-            'Content-Length': Buffer.byteLength(postDataStr)
+            'Authorization': `Bearer ${CH_ACCESS_TOKEN}`
         }
     };
 
