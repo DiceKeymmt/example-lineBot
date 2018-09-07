@@ -21,17 +21,6 @@ const options = {
     }
 }
 
-const test = {
-    protocol: 'https:',
-    host: 'http-server-test.herokuapp.com',
-    port: 443,
-    method: 'POST',
-    path: '/webhook',
-    headers: {
-        'Content-Type': 'application/json',
-    }
-}
-
 const data = {
     replyToken: '',
     messages: [{
@@ -40,6 +29,42 @@ const data = {
     }]
 }
 
-const client = http.createClient(process.env.PORT||8080,'polar-journey-64411.herokuapp.com')
+const server = http.createServer();
 
-console.log(client)
+server.on('request', (req,res) => {
+    let rowData = '';
+
+    req.on('data', chunk => {
+        rowData += chunk;
+    })
+
+    req.on('end', () => {
+        console.log(rowData);
+        const body = JSON.parse(rowData);
+        const signature = crypto.createHmac('SHA256',config.channelSecret).update(rowData).digest('base64');
+
+        if (req.headers['X-Line-Signature'] === signature) {
+            data.replyToken = body.replyToken;
+            const req = https.request(options, res => {
+                let requestBody = '';
+                
+                res.on('data', chunk => {
+                    requestBody += chunk;
+                });
+
+                res.on('end', () => {
+                    console.log(requestBody)
+                })
+            });
+
+            req.on('error', err => {
+                console.log(err);
+            });
+
+            req.write(JSON.stringify(data));
+            req.end();
+        }
+    })
+
+    res.end('owata')
+}).listen(process.env.PORT||8080);
