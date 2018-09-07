@@ -50,31 +50,7 @@ server.on('request', (req, res) => {
             const signature = crypto.createHmac('SHA256', config.channelSecret).update(rowData).digest('base64')
 
             if (req.headers['x-line-signature'] === signature) {
-                const body = JSON.parse(rowData);
-                data.replyToken = body.replyToken;
-                console.log(`body.replyToken:${body.replyToken}
-data.replyToken:${data.replyToken}`)
-
-                const _req = https.request(options, res => {
-                    let requestBody = '';
-                    res.on('data', chunk => {
-                        requestBody += chunk;
-                    });
-
-                    res.on('end', () => {
-                        console.log(requestBody);
-                    });
-                });
-
-                _req.on('error', err => {
-                    console.log(err);
-                });
-
-                _req.write(JSON.stringify(data));
-
-                _req.end();
-            } else {
-                console.log('False')
+                console.log(typeof rowData)
             }
         }
     })
