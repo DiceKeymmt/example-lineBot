@@ -64,10 +64,12 @@ server.on('request', (req, res) => {
                 });
 
                 req.on('error', err => {
-                    console.log(err);
+                    console.log(`https.request error
+${err}`);
                 });
-
-                req.write(JSON.stringify(data));
+                console.log(data);
+                const d = JSON.stringify(data);
+                req.write(d);
                 req.end()
 
             }
