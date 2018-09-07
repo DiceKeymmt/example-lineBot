@@ -53,6 +53,4 @@ server.on('request', (req,res) => {
             }
         }
     })
-
-    res.end('owata')
 }).listen(process.env.PORT||8080);
