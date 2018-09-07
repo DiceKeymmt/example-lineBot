@@ -40,15 +40,17 @@ server.on('request', (req,res) => {
     })
 
     req.on('end', () => {
-        console.log(rowData);
-        const signature = crypto.createHmac('SHA256',config.channelSecret).update(rowData).digest('base64');
-
-        if (req.headers['X-Line-Signature'] === signature) {
-            console.log(`True
-            ${signature}`)
+        if (req.headers['x-line-signature']) {
+            res.writeHead(404,{'Content-Type':'text/plain'});
+            res.end(`File not found
+            お探しのページは見つかりません。`)
         } else {
-            console.log(`False
-            ${signature}`)
+            const signature = crypto.createHmac('SHA256', config.channelSecret).update(rowData).digest('base64')
+
+            if (req.headers['x-line-signature'] === signature) {
+                console.log(rowData)
+                res.end('owata')
+            }
         }
     })
 
