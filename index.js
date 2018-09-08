@@ -58,7 +58,7 @@ server.on('request', (req, res) => {
                         }
 
                     case 'location':
-                        client(`http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=${webhookEventObj.events[0].message.latitude}&lng=${webhookEventObj.events[0].message.longitude}&range=3`)
+                        return client(`http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=${webhookEventObj.events[0].message.latitude}&lng=${webhookEventObj.events[0].message.longitude}&range=3`)
                         .then( data => {
                             return {
                                 replyToken: webhookEventObj.events[0].replyToken,
@@ -68,7 +68,7 @@ server.on('request', (req, res) => {
                                 }]
                             }
                         })
-                        console.log('promise end')
+                        
                     default:
                         return {
                             replyToken: webhookEventObj.events[0].replyToken,
