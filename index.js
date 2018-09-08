@@ -36,6 +36,8 @@ server.on('request', (req, res) => {
             return
         }
 
+        console.log(body)
+        
         const signature = crypto.createHmac('SHA256', config.channelSecret).update(body).digest('base64');
         if (req.headers['x-line-signature'] === signature) {
             const webhookEventObj = JSON.parse(body);
