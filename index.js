@@ -4,6 +4,10 @@ const http = require('http');
 const https = require('https');
 const crypto = require('crypto');
 
+const client = require('./getShopInfo').client
+
+const apiKey = process.env.API_KEY
+
 const config = {
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
     channelSecret: process.env.CHANNEL_SECRET,
@@ -51,6 +55,24 @@ server.on('request', (req, res) => {
                             }]
                         }
 
+                    case 'location':
+                        const req = client(`http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=${webhookEventObj.events[0].message.latitude}&lng=${webhookEventObj.events[0].message.longitude}&range=3`);
+                        req.then( data => {
+                            return {
+                                replyToken: webhookEventObj.events[0].replyToken,
+                                messages: [
+                                    {
+                                        type: 'text',
+                                        text: data.results.shop[0].name
+                                    },
+                                    {
+                                        type: 'text',
+                                        text: data.results.shop[0].address
+                                    }
+                                ]
+                            }
+                        })
+                        
                     default:
                         return {
                             replyToken: webhookEventObj.events[0].replyToken,
