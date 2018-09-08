@@ -69,6 +69,7 @@ server.on('request', (req, res) => {
                             }
                         })
 
+                        break;
                     default:
                         return {
                             replyToken: webhookEventObj.events[0].replyToken,
