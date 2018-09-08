@@ -58,6 +58,7 @@ server.on('request', (req, res) => {
                         }
 
                     case 'location':
+                        console.log('test')
                         const req = client(`http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=${webhookEventObj.events[0].message.latitude}&lng=${webhookEventObj.events[0].message.longitude}&range=3`);
                         req.then( data => {
                             return {
@@ -74,7 +75,7 @@ server.on('request', (req, res) => {
                                 ]
                             }
                         })
-                        
+
                     default:
                         return {
                             replyToken: webhookEventObj.events[0].replyToken,
