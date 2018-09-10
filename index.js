@@ -91,7 +91,7 @@ server.on('request', (req, res) => {
 
         switch (webhookEventObj.events[0].message.type) {
             case 'text':
-                const replyData = {
+                var replyData = {
                     replyToken: webhookEventObj.events[0].replyData,
                     messages: [{
                         type: 'text',
@@ -110,7 +110,7 @@ server.on('request', (req, res) => {
                 break;
 
             default:
-                const replyData = {
+                var replyData = {
                     replyToken: webhookEventObj.events[0].replyData,
                     messages: [{
                         type: 'text',
