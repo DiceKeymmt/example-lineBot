@@ -65,20 +65,20 @@ server.on('request', (req, res) => {
 
     req.on('end', () => {
         if (body === '') {
-            throw "bodyに値を存在しません。"
+            console.log('bodyが空です。')
+            return
         }
 
         const signature = crypto.createHmac('SHA256', config.channelSecret).update(body).digest('base64');
         const webhookEventObj = JSON.parse(body);
 
-        console.log('signature')
         if (!req.headers['x-line-signature'] === signature) {
-            throw "Signatureの値を不正です。"
+            console.log('Signatureの値が不正です。')
+            return
         }
-        console.log('switch文')
+
         switch (webhookEventObj.events[0].message.type) {
             case 'text':
-                console.log('message.type => text')
                 var replyData = {
                     replyToken: webhookEventObj.events[0].replyToken,
                     messages: [{
@@ -98,7 +98,6 @@ server.on('request', (req, res) => {
                 break;
 
             default:
-                console.log('message.type => not text')
                 var replyData = {
                     replyToken: webhookEventObj.events[0].replyToken,
                     messages: [{
