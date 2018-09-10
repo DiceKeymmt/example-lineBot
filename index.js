@@ -77,6 +77,7 @@ server.on('request', (req, res) => {
 
         switch (webhookEventObj.events[0].message.type) {
             case 'text':
+                console.log('message.type => text')
                 var replyData = {
                     replyToken: webhookEventObj.events[0].replyToken,
                     messages: [{
@@ -96,6 +97,7 @@ server.on('request', (req, res) => {
                 break;
 
             default:
+                console.log('message.type => not text')
                 var replyData = {
                     replyToken: webhookEventObj.events[0].replyToken,
                     messages: [{
@@ -117,4 +119,4 @@ server.on('request', (req, res) => {
         }
     })
     res.end('owata');
-}).listen(config.port||8080);
+}).listen(config.port || 8080);
