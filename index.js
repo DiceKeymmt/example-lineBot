@@ -4,26 +4,12 @@ const http = require('http');
 const https = require('https');
 const crypto = require('crypto');
 
-const client = require('./getShopInfo').client
-
 const apiKey = process.env.API_KEY
 
 const config = {
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
     channelSecret: process.env.CHANNEL_SECRET,
     port: process.env.PORT
-}
-
-let options = {
-    protocol: 'https:',
-    host: 'api.line.me',
-    method: 'POST',
-    path: '/v2/bot/message/reply',
-    headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': 0,
-        'Authorization': `Bearer ${config.channelAccessToken}`
-    }
 }
 
 const server = http.createServer();
@@ -38,7 +24,7 @@ const DataTransmissionToMessageAPI = (replyData) => {
         path: '/v2/bot/message/reply',
         headers: {
             'Content-Type': 'application/json',
-            'Content-Length': JSON.stringify(replyData).length.toString(),
+            'Content-Length': Buffer.byteLength(JSON.stringify(replyData)),
             'Authorization': `Bearer ${config.channelAccessToken}`
         }
     }
