@@ -28,83 +28,107 @@ let options = {
 
 const server = http.createServer();
 
+//url // http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=${webhookEventObj.events[0].message.latitude}&lng=${webhookEventObj.events[0].message.longitude}&range=3
+
+const DataTransmissionToMessageAPI = (replyData) => {
+    const options = {
+        protocol: 'https:',
+        host: 'api.line.me',
+        method: 'POST',
+        path: '/v2/bot/message/reply',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': JSON.stringify(replyData).length.toString(),
+            'Authorization': `Bearer ${config.channelAccessToken}`
+        }
+    }
+
+    return new Promise((resolve, reject) => {
+        const req = https.request(options, res => {
+            let body = '';
+
+            res.on('data', chunk => {
+                body += chunk;
+            });
+
+            res.on('end', () => {
+                resolve(body)
+            })
+        }).on('error', err => {
+            reject(err)
+        });
+
+        req.write(JSON.stringify(replyData));
+        req.end()
+    });
+}
+
 server.on('request', (req, res) => {
+    if (req.url !== '/webhook' || req.method !== 'POST') {
+        res.writeHead(404, {
+            'Content-Type': 'text/plain'
+        });
+        res.end(`404 Not Found`)
+    }
+
     let body = '';
+
     req.on('data', chunk => {
         body += chunk;
     });
 
     req.on('end', () => {
         if (body === '') {
-            console.log('bodyが空です。');
-            return
+            throw "bodyに値を存在しません。"
         }
 
-        console.log(body)
-        
-        const signature = crypto.createHmac('SHA256', config.channelSecret).update(body).digest('base64');
-        if (req.headers['x-line-signature'] === signature) {
-            const webhookEventObj = JSON.parse(body);
+        const signature = crypto.createHmac('SHA256', channelSecret).update(body).digest('base64');
+        const webhookEventObj = JSON.parse(body);
 
-            const data = (() => {
-                if (webhookEventObj.events[0].message.type === 'text') {
-                    return {
-                        replyToken: webhookEventObj.events[0].replyToken,
-                        messages: [{
-                            type: 'text',
-                            text: webhookEventObj.events[0].message.text
-                        }]
-                    } 
-                } else if (webhookEventObj.events[0].message.type === 'location') {
-                    client(`http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=${webhookEventObj.events[0].message.latitude}&lng=${webhookEventObj.events[0].message.longitude}&range=3`)
-                        .then( data => {
-                            return {
-                                replyToken: webhookEventObj.events[0].replyToken,
-                                messages: [{
-                                    type: 'text',
-                                    text: data.results.shop[0].name
-                                },
-                                {
-                                    type: 'text',
-                                    text: data.results.shop[0].address
-                                }
-                            ]
-                            } 
-                        })
+        if (!req.headers['x-line-signature'] === signature) {
+            throw "Signatureの値を不正です。"
+        }
 
-                    console.log('promise')
-                } else {
-                    return {
-                        replyToken: webhookEventObj.events[0].replyToken,
-                        messages: [{
-                            type: 'text',
-                            text: '値が無効です。'
-                        }]
-                    }
+        switch (webhookEventObj.events[0].message.type) {
+            case 'text':
+                const replyData = {
+                    replyToken: webhookEventObj.events[0].replyData,
+                    messages: [{
+                        type: 'text',
+                        text: webhookEventObj.events[0].message.text
+                    }]
                 }
-            })();
 
-            options.headers['Content-Length'] = Buffer.byteLength(JSON.stringify(data));
+                DataTransmissionToMessageAPI(replyData)
+                    .then(d => {
+                        console.log(d)
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    });
 
-            const req = https.request(options, res => {
-                let body = '';
+                break;
 
-                res.on('data', chunk => {
-                    body += chunk;
-                });
+            default:
+                const replyData = {
+                    replyToken: webhookEventObj.events[0].replyData,
+                    messages: [{
+                        type: 'text',
+                        text: '不正なメッセージです。'
+                    }]
+                }
 
-                res.on('end', () => {
-                    console.log(body)
-                });
-            });
+                DataTransmissionToMessageAPI(replyData)
+                    .then(d => {
+                        console.log(d)
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    });
 
-            req.on('error', err => {
-                console.log(err)
-            })
+                break;
 
-            req.write(JSON.stringify(data))
-            req.end();
-            res.end('owata')
         }
     })
-}).listen(config.port || 8080)
+    res.end('owata');
+}).listen(config.port||8080);
