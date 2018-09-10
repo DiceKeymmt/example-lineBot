@@ -68,7 +68,7 @@ server.on('request', (req, res) => {
             throw "bodyに値を存在しません。"
         }
 
-        const signature = crypto.createHmac('SHA256', channelSecret).update(body).digest('base64');
+        const signature = crypto.createHmac('SHA256', config.channelSecret).update(body).digest('base64');
         const webhookEventObj = JSON.parse(body);
 
         console.log('signature')
