@@ -71,10 +71,11 @@ server.on('request', (req, res) => {
         const signature = crypto.createHmac('SHA256', channelSecret).update(body).digest('base64');
         const webhookEventObj = JSON.parse(body);
 
+        console.log('signature')
         if (!req.headers['x-line-signature'] === signature) {
             throw "Signatureの値を不正です。"
         }
-
+        console.log('switch文')
         (() => {
             switch (webhookEventObj.events[0].message.type) {
                 case 'text':
