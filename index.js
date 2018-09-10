@@ -76,50 +76,48 @@ server.on('request', (req, res) => {
             throw "Signatureの値を不正です。"
         }
         console.log('switch文')
-        (() => {
-            switch (webhookEventObj.events[0].message.type) {
-                case 'text':
-                    console.log('message.type => text')
-                    var replyData = {
-                        replyToken: webhookEventObj.events[0].replyToken,
-                        messages: [{
-                            type: 'text',
-                            text: webhookEventObj.events[0].message.text
-                        }]
-                    }
+        switch (webhookEventObj.events[0].message.type) {
+            case 'text':
+                console.log('message.type => text')
+                var replyData = {
+                    replyToken: webhookEventObj.events[0].replyToken,
+                    messages: [{
+                        type: 'text',
+                        text: webhookEventObj.events[0].message.text
+                    }]
+                }
 
-                    DataTransmissionToMessageAPI(replyData)
-                        .then(d => {
-                            console.log(d)
-                        })
-                        .catch(e => {
-                            console.log(e)
-                        });
+                DataTransmissionToMessageAPI(replyData)
+                    .then(d => {
+                        console.log(d)
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    });
 
-                    break;
+                break;
 
-                default:
-                    console.log('message.type => not text')
-                    var replyData = {
-                        replyToken: webhookEventObj.events[0].replyToken,
-                        messages: [{
-                            type: 'text',
-                            text: '不正なメッセージです。'
-                        }]
-                    }
+            default:
+                console.log('message.type => not text')
+                var replyData = {
+                    replyToken: webhookEventObj.events[0].replyToken,
+                    messages: [{
+                        type: 'text',
+                        text: '不正なメッセージです。'
+                    }]
+                }
 
-                    DataTransmissionToMessageAPI(replyData)
-                        .then(d => {
-                            console.log(d)
-                        })
-                        .catch(e => {
-                            console.log(e)
-                        });
+                DataTransmissionToMessageAPI(replyData)
+                    .then(d => {
+                        console.log(d)
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    });
 
-                    break;
+                break;
 
-            }
-        })();
+        }
     })
     res.end('owata');
 }).listen(config.port || 8080);
