@@ -92,7 +92,7 @@ server.on('request', (req, res) => {
         switch (webhookEventObj.events[0].message.type) {
             case 'text':
                 var replyData = {
-                    replyToken: webhookEventObj.events[0].replyData,
+                    replyToken: webhookEventObj.events[0].replyToken,
                     messages: [{
                         type: 'text',
                         text: webhookEventObj.events[0].message.text
@@ -111,7 +111,7 @@ server.on('request', (req, res) => {
 
             default:
                 var replyData = {
-                    replyToken: webhookEventObj.events[0].replyData,
+                    replyToken: webhookEventObj.events[0].replyToken,
                     messages: [{
                         type: 'text',
                         text: '不正なメッセージです。'
