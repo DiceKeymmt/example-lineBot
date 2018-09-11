@@ -53,8 +53,10 @@ const DataTransmissionToMessageAPI = (replyData) => {
 server.on('request', (req, res) => {
 
     console.log('request => server')
-    console.log(req.headers)
-    
+    console.log(`Header
+${req.headers}`)
+    console.log(req.url)
+
     if (req.url !== '/webhook' || req.method !== 'POST') {
         res.writeHead(404, {
             'Content-Type': 'text/plain'
