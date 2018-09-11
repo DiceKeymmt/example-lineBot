@@ -49,23 +49,25 @@ const DataTransmissionToMessageAPI = (replyData) => {
     });
 }
 
-const getData = (url,callback) => {
-    const req = http.request(url, res => {
-        console.log('getData')
-        let body = '';
+const getData = url => {
+    return new Promise((resolve, reject) => {
+        const req = http.request(url, res => {
+            console.log('getData')
+            let body = '';
 
-        res.on('data', chunk => {
-            body += chunk;
+            res.on('data', chunk => {
+                body += chunk;
+            });
+
+            res.on('end', () => {
+                resolve(JSON.parse(body))
+            })
+        }).on('error', err => {
+            reject(err)
         });
 
-        res.on('end', () => {
-            console.log(body)
-        })
-    }).on('error', err => {
-        console.log(err)
-    });
-
-    req.end()
+        req.end()
+    })
 }
 
 server.on('request', (req, res) => {
@@ -123,7 +125,17 @@ server.on('request', (req, res) => {
 
             case 'location':
                 console.log(body)
-                getData(`http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=35.658593&lng=139.745441&range=3',DataTransmissionToMessageAPI`)
+                getData(`http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=35.658593&lng=139.745441&range=3&count=1`)
+                .then(obj => {
+                    var replyData = {
+                        replyToken: webhookEventObj.events[0].replyToken,
+                        messages: [{
+                            type: 'text',
+                            text: 'test'
+                        }]
+                    }
+                    console.log(obj)
+                })
                 break;
 
             default:
