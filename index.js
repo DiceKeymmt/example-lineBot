@@ -69,14 +69,14 @@ ${req.headers}`)
     req.on('data', chunk => {
 
         console.log('request => data => server')
-        
+
         body += chunk;
     });
 
     req.on('end', () => {
-        
+
         console.log('request => end => server')
-        
+
         if (body === '') {
             console.log('bodyが空です。')
             return
@@ -110,7 +110,10 @@ ${req.headers}`)
                         console.log(e)
                     });
 
-                console.log('break')
+                res.writeHead(200, {
+                    'Content-Type': 'text/plain'
+                })
+                res.end('success')
                 break;
 
             default:
@@ -130,12 +133,12 @@ ${req.headers}`)
                         console.log(e)
                     });
 
+                res.writeHead(200, {
+                    'Content-Type': 'text/plain'
+                })
+                res.end('success')
                 break;
 
         }
     })
-
-    console.log('server => end')
-
-    res.end('owata');
 }).listen(config.port || 8080);
