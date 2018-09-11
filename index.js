@@ -130,11 +130,31 @@ server.on('request', (req, res) => {
                     var replyData = {
                         replyToken: webhookEventObj.events[0].replyToken,
                         messages: [{
-                            type: 'text',
-                            text: 'test'
-                        }]
+                            type: "bubble", // ①
+                            body: { // ②
+                              type: "box", // ③
+                              layout: "horizontal",　// ④
+                              contents: [ // ⑤
+                                {
+                                  type: "text", // ⑥
+                                  text: "Hello,"
+                                },
+                                {
+                                  type: "text", // ⑥
+                                  text: "World!"
+                                }
+                              ]
+                            }
+                          }
+                          ]
                     }
-                    console.log(obj.results.shop[0])
+                    DataTransmissionToMessageAPI(replyData)
+                    .then(d => {
+                        console.log(d)
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
                 })
                 break;
 
