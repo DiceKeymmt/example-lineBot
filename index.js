@@ -51,6 +51,9 @@ const DataTransmissionToMessageAPI = (replyData) => {
 }
 
 server.on('request', (req, res) => {
+
+    console.log('request => server')
+    
     if (req.url !== '/webhook' || req.method !== 'POST') {
         res.writeHead(404, {
             'Content-Type': 'text/plain'
@@ -61,10 +64,16 @@ server.on('request', (req, res) => {
     let body = '';
 
     req.on('data', chunk => {
+
+        console.log('request => data => server')
+        
         body += chunk;
     });
 
     req.on('end', () => {
+        
+        console.log('request => end => server')
+        
         if (body === '') {
             console.log('bodyが空です。')
             return
@@ -77,6 +86,8 @@ server.on('request', (req, res) => {
             console.log('Signatureの値が不正です。')
             return
         }
+
+        console.log('request => message => server')
 
         switch (webhookEventObj.events[0].message.type) {
             case 'text':
@@ -120,5 +131,8 @@ server.on('request', (req, res) => {
 
         }
     })
+
+    console.log('server => end')
+    
     res.end('owata');
 }).listen(config.port || 8080);
