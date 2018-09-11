@@ -134,7 +134,7 @@ server.on('request', (req, res) => {
                             text: 'test'
                         }]
                     }
-                    console.log(obj)
+                    console.log(obj.results.shop[0])
                 })
                 break;
 
