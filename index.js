@@ -44,18 +44,12 @@ const DataTransmissionToMessageAPI = (replyData) => {
             reject(err)
         });
 
-        console.log('Transmission')
         req.write(JSON.stringify(replyData));
         req.end()
     });
 }
 
 server.on('request', (req, res) => {
-
-    console.log('request => server')
-    console.log(`Header
-${req.headers}`)
-    console.log(req.url)
 
     if (req.url !== '/webhook' || req.method !== 'POST') {
         res.writeHead(404, {
@@ -67,16 +61,10 @@ ${req.headers}`)
     let body = '';
 
     req.on('data', chunk => {
-
-        console.log('request => data => server')
-
         body += chunk;
     });
 
     req.on('end', () => {
-
-        console.log('request => end => server')
-
         if (body === '') {
             console.log('bodyが空です。')
             return
@@ -85,13 +73,12 @@ ${req.headers}`)
         const signature = crypto.createHmac('SHA256', config.channelSecret).update(body).digest('base64');
         const webhookEventObj = JSON.parse(body);
 
-        if (!req.headers['x-line-signature'] === signature) {
+        if (!req.headers['x-line-signature'] === signaturea) {
             console.log('Signatureの値が不正です。')
             return
         }
 
-        console.log('request => message => server')
-
+        console.log('foo')
         switch (webhookEventObj.events[0].message.type) {
             case 'text':
                 var replyData = {
