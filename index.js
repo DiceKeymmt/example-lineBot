@@ -126,83 +126,76 @@ server.on('request', (req, res) => {
             case 'location':
                 console.log(body)
                 getData(`http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=${webhookEventObj.events[0].message.latitude}&lng=${webhookEventObj.events[0].message.longitude}&range=3&count=1`)
-                .then(obj => {
-                    var replyData = {
-                        replyToken: webhookEventObj.events[0].replyToken,
-                        messages: [
-                            {
-                                "type": "carousel",
-                                "contents": [
-                                  {
-                                    "type": "bubble",
-                                    "body": {
-                                      "type": "box",
-                                      "layout": "horizontal",
-                                      "contents": [
+                    .then(obj => {
+                        var replyData = {
+                            replyToken: webhookEventObj.events[0].replyToken,
+                            messages: [{
+                                "type": "flex",
+                                "altText": "flex message example",
+                                "contents": {
+                                    "type": "carousel",
+                                    "contents": [{
+                                            "type": "bubble",
+                                            "body": {
+                                                "type": "box",
+                                                "layout": "horizontal",
+                                                "contents": [{
+                                                    "type": "text",
+                                                    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                                                    "wrap": true
+                                                }]
+                                            },
+                                            "footer": {
+                                                "type": "box",
+                                                "layout": "horizontal",
+                                                "contents": [{
+                                                    "type": "button",
+                                                    "style": "primary",
+                                                    "action": {
+                                                        "type": "uri",
+                                                        "label": "Go",
+                                                        "uri": "https://example.com"
+                                                    }
+                                                }]
+                                            }
+                                        },
                                         {
-                                          "type": "text",
-                                          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                                          "wrap": true
+                                            "type": "bubble",
+                                            "body": {
+                                                "type": "box",
+                                                "layout": "horizontal",
+                                                "contents": [{
+                                                    "type": "text",
+                                                    "text": "Hello, World!",
+                                                    "wrap": true
+                                                }]
+                                            },
+                                            "footer": {
+                                                "type": "box",
+                                                "layout": "horizontal",
+                                                "contents": [{
+                                                    "type": "button",
+                                                    "style": "primary",
+                                                    "action": {
+                                                        "type": "uri",
+                                                        "label": "Go",
+                                                        "uri": "https://example.com"
+                                                    }
+                                                }]
+                                            }
                                         }
-                                      ]
-                                    },
-                                    "footer": {
-                                      "type": "box",
-                                      "layout": "horizontal",
-                                      "contents": [
-                                        {
-                                          "type": "button",
-                                          "style": "primary",
-                                          "action": {
-                                            "type": "uri",
-                                            "label": "Go",
-                                            "uri": "https://example.com"
-                                          }
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "type": "bubble",
-                                    "body": {
-                                      "type": "box",
-                                      "layout": "horizontal",
-                                      "contents": [
-                                        {
-                                          "type": "text",
-                                          "text": "Hello, World!",
-                                          "wrap": true
-                                        }
-                                      ]
-                                    },
-                                    "footer": {
-                                      "type": "box",
-                                      "layout": "horizontal",
-                                      "contents": [
-                                        {
-                                          "type": "button",
-                                          "style": "primary",
-                                          "action": {
-                                            "type": "uri",
-                                            "label": "Go",
-                                            "uri": "https://example.com"
-                                          }
-                                        }
-                                      ]
-                                    }
-                                  }
-                                ]
-                              }
-                          ]
-                    }
-                    DataTransmissionToMessageAPI(replyData)
-                    .then(d => {
-                        console.log(d)
+                                    ]
+                                }
+                            }]
+                        }
+                        DataTransmissionToMessageAPI(replyData)
+                            .then(d => {
+                                console.log(d)
+                            })
+                            .catch(e => {
+                                console.log(e)
+                            })
                     })
-                    .catch(e => {
-                        console.log(e)
-                    })
-                })
                 break;
 
             default:
