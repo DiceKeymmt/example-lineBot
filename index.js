@@ -53,6 +53,7 @@ const DataTransmissionToMessageAPI = (replyData) => {
 server.on('request', (req, res) => {
 
     console.log('request => server')
+    console.log(req.headers)
     
     if (req.url !== '/webhook' || req.method !== 'POST') {
         res.writeHead(404, {
@@ -133,6 +134,6 @@ server.on('request', (req, res) => {
     })
 
     console.log('server => end')
-    
+
     res.end('owata');
 }).listen(config.port || 8080);
