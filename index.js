@@ -123,7 +123,7 @@ server.on('request', (req, res) => {
 
             case 'location':
                 console.log(body)
-                getData('http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=35.658593&lng=139.745441&range=3',DataTransmissionToMessageAPI)
+                getData(`http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=35.658593&lng=139.745441&range=3',DataTransmissionToMessageAPI`)
                 break;
 
             default:
