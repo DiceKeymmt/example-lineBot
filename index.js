@@ -126,36 +126,38 @@ server.on('request', (req, res) => {
             case 'location':
                 console.log(body)
                 getData(`http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=${webhookEventObj.events[0].message.latitude}&lng=${webhookEventObj.events[0].message.longitude}&range=3&count=1`)
-                .then(obj => {
-                    var replyData = {
-                        replyToken: webhookEventObj.events[0].replyToken,
-                        messages: [{
-                            type: "bubble", // ①
-                            body: { // ②
-                              type: "box", // ③
-                              layout: "horizontal",　// ④
-                              contents: [ // ⑤
-                                {
-                                  type: "text", // ⑥
-                                  text: "Hello,"
-                                },
-                                {
-                                  type: "text", // ⑥
-                                  text: "World!"
+                    .then(obj => {
+                        var replyData = {
+                            replyToken: webhookEventObj.events[0].replyToken,
+                            messages: [{
+                                "type": "flex",
+                                "altText": "This is a Flex Message",
+                                "contents": {
+                                    "type": "bubble",
+                                    "body": {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [{
+                                                "type": "text",
+                                                "text": "Hello,"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "World!"
+                                            }
+                                        ]
+                                    }
                                 }
-                              ]
-                            }
-                          }
-                          ]
-                    }
-                    DataTransmissionToMessageAPI(replyData)
-                    .then(d => {
-                        console.log(d)
+                            }]
+                        }
+                        DataTransmissionToMessageAPI(replyData)
+                            .then(d => {
+                                console.log(d)
+                            })
+                            .catch(e => {
+                                console.log(e)
+                            })
                     })
-                    .catch(e => {
-                        console.log(e)
-                    })
-                })
                 break;
 
             default:
