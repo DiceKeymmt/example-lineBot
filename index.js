@@ -51,6 +51,7 @@ const DataTransmissionToMessageAPI = (replyData) => {
 
 const getData = (url,callback) => {
     const req = http.request(url, res => {
+        console.log('getData')
         let body = '';
 
         res.on('data', chunk => {
@@ -121,8 +122,10 @@ server.on('request', (req, res) => {
                 break;
 
             case 'location':
+                console.log(body)
                 getData('http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=35.658593&lng=139.745441&range=3',DataTransmissionToMessageAPI)
                 break;
+
             default:
                 var replyData = {
                     replyToken: webhookEventObj.events[0].replyToken,
