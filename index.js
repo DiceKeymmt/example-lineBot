@@ -49,6 +49,24 @@ const DataTransmissionToMessageAPI = (replyData) => {
     });
 }
 
+const getData = (url,callback) => {
+    const req = http.request(url, res => {
+        let body = '';
+
+        res.on('data', chunk => {
+            body += chunk;
+        });
+
+        res.on('end', () => {
+            console.log(body)
+        })
+    }).on('error', err => {
+        console.log(err)
+    });
+
+    req.end()
+}
+
 server.on('request', (req, res) => {
 
     if (req.url !== '/webhook' || req.method !== 'POST') {
@@ -73,18 +91,11 @@ server.on('request', (req, res) => {
         const signature = crypto.createHmac('SHA256', config.channelSecret).update(body).digest('base64');
         const webhookEventObj = JSON.parse(body);
 
-        const flag = true
         if (!req.headers['x-line-signature'] === signature) {
             console.log('Signatureの値が不正です。')
             return
         }
 
-        if (flag) {
-            console.log(flag);
-            return
-        }
-
-        console.log('foo')
         switch (webhookEventObj.events[0].message.type) {
             case 'text':
                 var replyData = {
@@ -109,6 +120,9 @@ server.on('request', (req, res) => {
                 res.end('success')
                 break;
 
+            case 'location':
+                getData('http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=35.658593&lng=139.745441&range=3',DataTransmissionToMessageAPI)
+                break;
             default:
                 var replyData = {
                     replyToken: webhookEventObj.events[0].replyToken,
