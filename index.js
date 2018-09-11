@@ -44,6 +44,7 @@ const DataTransmissionToMessageAPI = (replyData) => {
             reject(err)
         });
 
+        console.log('Transmission')
         req.write(JSON.stringify(replyData));
         req.end()
     });
@@ -89,12 +90,13 @@ server.on('request', (req, res) => {
 
                 DataTransmissionToMessageAPI(replyData)
                     .then(d => {
-                        console.log(`Transmission ${d}`)
+                        console.log(d)
                     })
                     .catch(e => {
                         console.log(e)
                     });
 
+                console.log('break')
                 break;
 
             default:
