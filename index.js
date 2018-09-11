@@ -89,7 +89,7 @@ server.on('request', (req, res) => {
 
                 DataTransmissionToMessageAPI(replyData)
                     .then(d => {
-                        console.log(d)
+                        console.log(`Transmission ${d}`)
                     })
                     .catch(e => {
                         console.log(e)
