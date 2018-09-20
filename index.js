@@ -4,6 +4,7 @@ const http = require('http');
 const https = require('https');
 const crypto = require('crypto');
 
+const dataReply = require('./module_dataReply').dataReply;
 
 //チャンネル基本設定
 const config = {
@@ -33,8 +34,18 @@ server.on('request', (req, res) => {
     });
 
     req.on('end', () => {
-        console.log(body);
-        res.end();
+        const webhookEventObj = JSON.parse(body);
+        const sendMessageObj = {
+            replyToken: webhookEventObj.events[0].replyToken,
+            messages: [
+                {
+                    type: 'text',
+                    text: webhookEventObj.events[0].message.text
+                }
+            ]
+        }
+
+        dataReply(config, sendMessageObj);
     });
 
 }).listen(process.env.PORT||8080);
