@@ -8,7 +8,7 @@ const dataReply = (config, sendMessageObj) => {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${config.channelAccessToken}`,
-            'Content-Length': Buffer.byteLength(sendMessageObj)
+            'Content-Length': Buffer.byteLength(JSON.stringify(sendMessageObj))
         }
     }
 
