@@ -4,18 +4,24 @@ const http = require('http');
 const https = require('https');
 const crypto = require('crypto');
 
-const apiKey = process.env.API_KEY
-
+//チャンネル基本設定
 const config = {
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
-    channelSecret: process.env.CHANNEL_SECRET,
-    port: process.env.PORT
+    channelSecret: process.env.CHANNEL_SECRET
 }
 
-const server = http.createServer();
+//ホットペッパーAPI_KEY
+const apiKey = process.env.API_KEY
 
-//url // http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=${webhookEventObj.events[0].message.latitude}&lng=${webhookEventObj.events[0].message.longitude}&range=3
+/**
+ * 
+ * ホットペッパーグルメサーチAPIのリクエストURL
+ * 
+ * http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=${webhookEventObj.events[0].message.latitude}&lng=${webhookEventObj.events[0].message.longitude}&range=3
+ * 
+**/
 
+//MessagingAPIにリクエストを送る
 const DataTransmissionToMessageAPI = (replyData) => {
     const options = {
         protocol: 'https:',
@@ -49,6 +55,7 @@ const DataTransmissionToMessageAPI = (replyData) => {
     });
 }
 
+//グルメサーチAPIのデータ取得(json形式)
 const getData = url => {
     return new Promise((resolve, reject) => {
         const req = http.request(url, res => {
@@ -69,6 +76,9 @@ const getData = url => {
         req.end()
     })
 }
+
+//lineBotServer
+const server = http.createServer();
 
 server.on('request', (req, res) => {
 
@@ -134,58 +144,93 @@ server.on('request', (req, res) => {
                                 "altText": "flex message example",
                                 "contents": {
                                     "type": "carousel",
-                                    "contents": [{
-                                            "type": "bubble",
-                                            "body": {
-                                                "type": "box",
-                                                "layout": "horizontal",
-                                                "contents": [{
-                                                    "type": "text",
-                                                    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                                                    "wrap": true
-                                                }]
-                                            },
-                                            "footer": {
-                                                "type": "box",
-                                                "layout": "horizontal",
-                                                "contents": [{
-                                                    "type": "button",
-                                                    "style": "primary",
-                                                    "action": {
-                                                        "type": "uri",
-                                                        "label": "Go",
-                                                        "uri": "https://example.com"
-                                                    }
-                                                }]
-                                            }
+                                    "contents": [
+                                      {
+                                        "type": "bubble",
+                                        "hero": {
+                                          "type": "image",
+                                          "url": "https://andnow.jp/diary/wp-content/uploads/2018/08/38081426_212616786085419_4803702663222919168_n-1024x1024.jpg",
+                                          "size": "full"
                                         },
-                                        {
-                                            "type": "bubble",
-                                            "body": {
-                                                "type": "box",
-                                                "layout": "horizontal",
-                                                "contents": [{
-                                                    "type": "text",
-                                                    "text": "Hello, World!",
-                                                    "wrap": true
-                                                }]
+                                        "body": {
+                                          "type": "box",
+                                          "layout": "vertical",
+                                          "contents": [
+                                            {
+                                              "type": "text",
+                                              "text": "店名が入ります。",
+                                              "size": "xl",
+                                              "weight": "bold"
                                             },
-                                            "footer": {
-                                                "type": "box",
-                                                "layout": "horizontal",
-                                                "contents": [{
-                                                    "type": "button",
-                                                    "style": "primary",
-                                                    "action": {
-                                                        "type": "uri",
-                                                        "label": "Go",
-                                                        "uri": "https://example.com"
-                                                    }
-                                                }]
+                                            {
+                                              "type": "box",
+                                              "layout": "horizontal",
+                                              "spacing": "md",
+                                              "contents": [
+                                                {
+                                                  "type": "text",
+                                                  "text": "ジャンル /",
+                                                  "size": "xs",
+                                                  "flex": 0
+                                                },
+                                                {
+                                                  "type": "text",
+                                                  "text": "お店のジャンルキャッチが入ります。",
+                                                  "size": "xs",
+                                                  "wrap": true
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "box",
+                                              "layout": "horizontal",
+                                              "spacing": "md",
+                                              "contents": [
+                                                {
+                                                  "type": "text",
+                                                  "text": "アクセス /",
+                                                  "size": "xs",
+                                                  "flex": 0
+                                                },
+                                                {
+                                                  "type": "text",
+                                                  "text": "お店への交通アクセスが入ります。",
+                                                  "size": "xs",
+                                                  "wrap": true
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "box",
+                                              "layout": "horizontal",
+                                              "spacing": "xxl",
+                                              "contents": [
+                                                {
+                                                  "type": "button",
+                                                  "action": {
+                                                    "type": "uri",
+                                                    "label": "ブラウザで開く",
+                                                    "uri": "http://www.example.com"
+                                                  },
+                                                  "style": "primary"
+                                                },
+                                                {
+                                                  "type": "button",
+                                                  "action": {
+                                                    "type": "uri",
+                                                    "label": "電話する",
+                                                    "uri": "line://call/81/1022223333"
+                                                  },
+                                                  "style": "secondary"
+                                                }
+                                              ]
                                             }
+                                          ],
+                                          "spacing": "md"
                                         }
+                                      }
                                     ]
-                                }
+                                  }
                             }]
                         }
                         DataTransmissionToMessageAPI(replyData)
@@ -223,4 +268,4 @@ server.on('request', (req, res) => {
 
         }
     })
-}).listen(config.port || 8080);
+}).listen(process.env.PORT || 8080);
