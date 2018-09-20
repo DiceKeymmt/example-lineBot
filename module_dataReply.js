@@ -5,6 +5,7 @@ const dataReply = (config, sendMessageObj) => {
         protocol: 'https:',
         host: 'api.line.me',
         path: '/v2/bot/message/reply',
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${config.channelAccessToken}`,
