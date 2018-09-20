@@ -27,7 +27,6 @@ const server = http.createServer();
 server.on('request', (req, res) => {
     console.log(req.headers);
     let body = '';
-    console.log(req.headers);
 
     req.on('data', chunk => {
         body += chunk;
@@ -35,9 +34,7 @@ server.on('request', (req, res) => {
 
     req.on('end', () => {
         console.log(body);
-
         res.end();
     });
 
-    res.on('owata');
 }).listen(process.env.PORT||8080);
