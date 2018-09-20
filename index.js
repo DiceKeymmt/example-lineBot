@@ -4,6 +4,8 @@ const http = require('http');
 const https = require('https');
 const crypto = require('crypto');
 
+const apiRequest = require('./module_apiRequest').apiRequest;
+
 //チャンネル基本設定
 const config = {
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
@@ -17,7 +19,7 @@ const apiKey = process.env.API_KEY
  * 
  * ホットペッパーグルメサーチAPIのリクエストURL
  * 
- * http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=${webhookEventObj.events[0].message.latitude}&lng=${webhookEventObj.events[0].message.longitude}&range=3
+ * http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=${webhookEventObj.events[0].message.latitude}&lng=${webhookEventObj.events[0].message.longitude}&range=3&count=1
  * 
 **/
 
@@ -26,6 +28,7 @@ const server = http.createServer();
 server.on('request', (req, res) => {
     console.log(req.headers);
     let body = '';
+    console.log(req.headers);
 
     req.on('data', chunk => {
         body += chunk;
