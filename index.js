@@ -4,7 +4,6 @@ const http = require('http');
 const https = require('https');
 const crypto = require('crypto');
 
-const apiRequest = require('./module_apiRequest').apiRequest;
 
 //チャンネル基本設定
 const config = {
@@ -37,7 +36,7 @@ server.on('request', (req, res) => {
     req.on('end', () => {
         console.log(body);
 
-        res.end('owata');
+        res.end();
     });
 
     res.on('owata');
