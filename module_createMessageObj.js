@@ -84,10 +84,12 @@ const createMessageObj = (webhookEventObj, apiKey) => {
                           ]
                         }
                       }
+
+                      console.log(JSON.stringify(o));
                 });
             })
 
-            console.log(JSON.stringify(o));
+            
             break;
 
         default:
