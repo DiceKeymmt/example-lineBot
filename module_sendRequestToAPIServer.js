@@ -1,6 +1,6 @@
 const https = require('https');
 
-const apiRequest = url => {
+const sendRequestToAPIServer = url => {
     return new Promise((resolve, reject) => {
         const req = https.request(url, res => {
             let body = '';
@@ -21,4 +21,4 @@ const apiRequest = url => {
     });
 }
 
-exports.apiRequest = apiRequest;
+exports.sendRequestToAPIServer = sendRequestToAPIServer;
