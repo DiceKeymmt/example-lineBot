@@ -17,7 +17,8 @@ const createMessageObj = (webhookEventObj, apiKey) => {
             .then( jsonData => {
                 const jsonObj = JSON.parse(jsonData);
                 jsonObj.results.shop.forEach( obj => {
-                    messageObj.messages[0].contents.append({
+
+                    let o = {
                         type: "bubble",
                         hero: {
                           type: "image",
@@ -82,11 +83,11 @@ const createMessageObj = (webhookEventObj, apiKey) => {
                             }
                           ]
                         }
-                      })
+                      }
                 });
             })
 
-            console.log(JSON.stringify(messageObj));
+            console.log(JSON.stringify(o));
             break;
 
         default:
