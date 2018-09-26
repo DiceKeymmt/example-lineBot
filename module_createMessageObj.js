@@ -17,7 +17,7 @@ const createMessageObj = (webhookEventObj, apiKey) => {
             .then( jsonData => {
                 const jsonObj = JSON.parse(jsonData);
                 jsonObj.results.shop.forEach( obj => {
-                    messageObj.messages.contents.append({
+                    messageObj.messages[0].contents.append({
                         type: "bubble",
                         hero: {
                           type: "image",
