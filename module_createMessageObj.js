@@ -16,6 +16,7 @@ const createMessageObj = (webhookEventObj, apiKey) => {
             sendRequestToAPIServer(`https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=${webhookEventObj.events[0].message.latitude}&lng=${webhookEventObj.events[0].message.longitude}&range=3&count=10`)
             .then( jsonData => {
                 const jsonObj = JSON.parse(jsonData);
+
                 jsonObj.results.shop.forEach( obj => {
 
                     messageObj.messages[0].contents.push({
@@ -84,11 +85,11 @@ const createMessageObj = (webhookEventObj, apiKey) => {
                           ]
                         }
                       });
-                });
-            })
 
-            console.log(JSON.stringify(messageObj));
-            break;
+                });
+
+                return messageObj;
+            })
 
         default:
             console.log('not location')

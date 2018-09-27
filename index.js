@@ -35,7 +35,7 @@ server.on('request', (req, res) => {
 
     req.on('end', () => {
         const webhookEventObj = JSON.parse(body);
-        createMessageObj(webhookEventObj, apiKey);
+        console.log(createMessageObj(webhookEventObj, apiKey));
     });
 
 }).listen(process.env.PORT||8080);
