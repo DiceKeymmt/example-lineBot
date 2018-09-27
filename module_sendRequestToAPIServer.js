@@ -22,7 +22,7 @@ const sendRequestToAPIServer = (webhookEventObj, url) => {
         });
     }
 
-    resolve(webhookEventObj)
+    Promise.resolve(webhookEventObj)
 }
 
 exports.sendRequestToAPIServer = sendRequestToAPIServer;
