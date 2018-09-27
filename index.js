@@ -4,7 +4,7 @@ const http = require('http');
 const https = require('https');
 const crypto = require('crypto');
 
-const createMessageObj = require('./module_createMessageObj').createMessageObj;
+const sendRequestToAPIServer = require('./module_sendRequestToAPIServer').sendRequestToAPIServer
 
 //チャンネル基本設定
 const config = {
@@ -19,7 +19,7 @@ const apiKey = process.env.API_KEY
  * 
  * ホットペッパーグルメサーチAPIのリクエストURL
  * 
- * http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=${webhookEventObj.events[0].message.latitude}&lng=${webhookEventObj.events[0].message.longitude}&range=3&count=1
+ * https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=${webhookEventObj.events[0].message.latitude}&lng=${webhookEventObj.events[0].message.longitude}&range=3&count=1
  * 
 **/
 
@@ -35,7 +35,10 @@ server.on('request', (req, res) => {
 
     req.on('end', () => {
         const webhookEventObj = JSON.parse(body);
-        console.log(createMessageObj(webhookEventObj, apiKey));
+        sendRequestToAPIServer(webhookEventObj,`https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=${webhookEventObj.events[0].message.latitude}&lng=${webhookEventObj.events[0].message.longitude}&range=3&count=1`)
+        .then( retVal => {
+            console.log(retVal);
+        });
     });
 
 }).listen(process.env.PORT||8080);
