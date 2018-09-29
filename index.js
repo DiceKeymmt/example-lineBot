@@ -6,7 +6,7 @@ const crypto = require('crypto');
 
 const sendRequestToAPIServer = require('./module_sendRequestToAPIServer').sendRequestToAPIServer;
 const createMessageObj = require('./module_createMessageObj').createMessageObj;
-const detaReply = require('./module_dataReply').dataReply;
+const dataReply = require('./module_dataReply').dataReply;
 
 //チャンネル基本設定
 const config = {
