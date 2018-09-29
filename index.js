@@ -33,6 +33,7 @@ server.on('request', (req, res) => {
 
     req.on('data', chunk => {
         body += chunk;
+        console.log(body);
     });
 
     req.on('end', () => {
