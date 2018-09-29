@@ -1,28 +1,28 @@
 const https = require('https');
 
 const sendRequestToAPIServer = (webhookEventObj, url) => {
-    if (webhookEventObj.events[0].message.type === 'location') {
-        return new Promise((resolve, reject) => {
-            const req = https.request(url, res => {
-                let body = '';
+    return new Promise((resolve, reject) => {
+        if (webhookEventObj.events[0].message.type !== 'location') {
+            resolve(undefined);
+        }
 
-                res.on('data', chunk => {
-                    body += chunk;
-                });
+        const req = https.request(url, res => {
+            let body = '';
 
-                res.on('end', () => {
-                    resolve(body);
-                });
-
-            }).on('error', err => {
-                reject(err);
+            res.on('data', chunk => {
+                body += chunk;
             });
 
-            req.end();
-        });
-    }
+            res.on('end', () => {
+                resolve(body)
+            });
 
-    return Promise.resolve(webhookEventObj)
+        }).on('error', err => {
+            reject(err);
+        });
+
+        req.end();
+    })
 }
 
 exports.sendRequestToAPIServer = sendRequestToAPIServer;
