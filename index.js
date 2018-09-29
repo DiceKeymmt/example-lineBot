@@ -39,7 +39,7 @@ server.on('request', (req, res) => {
         const webhookEventObj = JSON.parse(body);
         sendRequestToAPIServer(webhookEventObj,`https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${apiKey}&format=json&lat=${webhookEventObj.events[0].message.latitude}&lng=${webhookEventObj.events[0].message.longitude}&range=3&count=10`)
         .then( retVal => {
-            dataReply(createMessageObj(retVal,webhookEventObj));
+            dataReply(config,createMessageObj(retVal,webhookEventObj));
         });
     });
 
