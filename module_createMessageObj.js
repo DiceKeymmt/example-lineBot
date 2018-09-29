@@ -16,14 +16,18 @@ const createMessageObj = (jsonData, webhookEventObj) => {
         replyToken: webhookEventObj.events[0].replyToken,
         messages: [
             {
-                type: "carousel",
-                contents: []
+                type: "flex",
+                altText: "this is a flexMessage",
+                contents: {
+                    type: "carousel",
+                    contents: []
+                }
             }
         ]
     }
 
     jsonObj.results.shop.forEach(element => {
-        replyData.messages[0].contents.push(
+        replyData.messages[0].contents.contents.push(
             {
                 type: "bubble",
                 hero: {
