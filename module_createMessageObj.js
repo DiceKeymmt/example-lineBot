@@ -5,7 +5,18 @@ const createMessageObj = (jsonData, webhookEventObj) => {
             messages: [
                 {
                     type: 'text',
-                    text: '位置情報を入力してください。'
+                    text: '位置情報を入力してください。',
+                    quickReply: {
+                        items: [
+                            {
+                                type: 'action',
+                                action: {
+                                    type: 'location',
+                                    label: 'どこにいるの？'
+                                }
+                            }
+                        ]
+                    }
                 }
             ]
         }
