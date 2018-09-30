@@ -52,10 +52,13 @@ const createMessageObj = (jsonData, webhookEventObj) => {
                   spacing: "md",
                   contents: [
                     {
-                      type: "button",
+                      type: "text",
+                      text: element.name,
+                      color: "#5f65af",
+                      align: "center",
                       action: {
                         type: "uri",
-                        label: element.name,
+                        label: "uriActionLabel",
                         uri: element.urls.pc
                       }
                     },
